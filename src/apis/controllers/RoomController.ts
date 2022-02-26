@@ -4,11 +4,17 @@ import { Server, Socket } from "socket.io";
 @SocketController()
 export class RoomController {
 
+    @OnMessage('create_game')
+    public async createGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
+        console.log("Game created by ", message.playerName, " in room ", message.roomId);
+        
+    }
+
     @OnMessage("join_game")
     public async joinGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         console.log("New user joining room ", message);
         
-        const connectedSockets = io.sockets.sockets
+        const connectedSockets = io.sockets.adapter.rooms
         console.log("Connected Sockets ", connectedSockets)
         const socketRooms = Array.from(socket.rooms.values()).filter((room) => room !== socket.id)
 
